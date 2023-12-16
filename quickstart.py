@@ -49,7 +49,13 @@ def main():
       return
     print("Files:")
     for item in items:
-      print(f"{item['name']} ({item['id']})")
+        if item['name'] == 'Dataset':
+            data_set_folder = item['id']
+            print(f"{item['name']} ({item['id']})")
+
+    for file in data_set_folder:
+        print(file)
+
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred: {error}")
