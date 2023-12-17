@@ -20,8 +20,8 @@ Run in a containerized fashion.  Always think Docker.
 
 Use virtualenv to isolate your python environment. Virtualenv is a tool to create isolated Python environments. The basic problem it addresses is one of dependencies and versions, and indirectly permissions.
 
-```bash
 For MacOs
+```bash
 pip3 install virtualenv
 virtualenv <your-env>
 source <your-env>/bin/activate
