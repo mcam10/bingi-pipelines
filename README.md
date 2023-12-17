@@ -16,6 +16,17 @@ Description of image contents
 
 Run in a containerized fashion.  Always think Docker.
 
+# Prerequisites
+
+Use virtualenv to isolate your python environment. Virtualenv is a tool to create isolated Python environments. The basic problem it addresses is one of dependencies and versions, and indirectly permissions.
+
+```bash
+For MacOs
+pip3 install virtualenv
+virtualenv <your-env>
+source <your-env>/bin/activate
+```
+
 ## Installation
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install foobar.
