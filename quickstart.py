@@ -39,22 +39,19 @@ def main():
     # Call the Drive v3 API
     results = (
         service.files()
-        .list(pageSize=10, fields="nextPageToken, files(id, name)")
+        .list(
+            pageSize=10, fields="nextPageToken, files(id, name)",
+            q="mimeType='application/vnd.google-apps.folder'",
+         )   
         .execute()
     )
     items = results.get("files", [])
 
-    if not items:
-      print("No files found.")
-      return
-    print("Files:")
-    for item in items:
-        if item['name'] == 'Dataset':
-            data_set_folder = item['id']
-            print(f"{item['name']} ({item['id']})")
+    dataset = items[0].get('id')
 
-    for file in data_set_folder:
-        print(file)
+    answers = service.files().list(q = "'" + dataset + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
+
+    choco = answers.get('files', [])
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
