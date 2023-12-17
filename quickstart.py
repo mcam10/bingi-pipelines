@@ -1,13 +1,23 @@
+# import os libs
 import os.path
 
+#google drive libs
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+#import aws libs
+import boto3
+
+
+## Gdrive Globals
 # If modifying these scopes, delete the file token.json.
 SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly", "https://www.googleapis.com/auth/drive.metadata"]
+
+## AWS Globals
+ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
 
 def main():
@@ -64,5 +74,11 @@ def main():
     print(f"An error occurred: {error}")
 
 
+def list_s3_buckets():
+    client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
+    response = client.list_buckets()
+    print(response)
+
 if __name__ == "__main__":
   main()
+  list_s3_buckets()
