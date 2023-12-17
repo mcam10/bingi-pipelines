@@ -7,7 +7,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly", "https://www.googleapis.com/auth/drive.metadata"]
 
 
 def main():
@@ -52,6 +52,12 @@ def main():
     answers = service.files().list(q = "'" + dataset + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
 
     choco = answers.get('files', [])
+
+    for file in choco:
+        print('\n',file['name'],file['id'])
+        data = service.files().get(fileId=file['id']).execute()
+        print(data)
+
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
