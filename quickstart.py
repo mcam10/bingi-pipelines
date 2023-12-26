@@ -73,39 +73,11 @@ def main():
         items.extend(response.get('files', []))
         pageToken = response.get('nextPageToken')
 
-# the response object holds.. each folder and its files.. so classification folder then each folder that represents what each number means..
-        print(response)
-         
-    
-#        data = service.files().get(fileId=file['id']).execute()
-#        print(data)
-
-
-# pageSize=10, fields="nextPageToken, files(id, name)",
-#  q="mimeType='application/vnd.google-apps.folder'",
-    # Call the Drive v3 API
-#    print(results)
-#    items = results.get("files", [])
-
-#    dataset = items[0].get('id')
-
-
-#    answers = service.files().list(q = "'" + dataset + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
-
-#this is wrong
-#    choco = answers.get('files', [])
-
-#    for file in choco:
-#        print('\n',file['name'],file['id'])
-#        data = service.files().get(fileId=file['id']).execute()
-#        print(data)
-
-
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred: {error}")
 
-
+#need to come back to this -- add this to a list of tests that we can run.. pytest mocking calls to the cloud.. setup test suite to test functionality. Github Actions to test
 def list_s3_buckets():
     client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
     response = client.list_buckets.get('Buckets')
