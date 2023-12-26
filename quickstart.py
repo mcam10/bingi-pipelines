@@ -13,8 +13,8 @@ import boto3
 
 
 ## Gdrive Globals
-# If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/drive.metadata.readonly", "https://www.googleapis.com/auth/drive.metadata"]
+# If modifying these scopes, delete the file token.json:
+SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.metadata.readonly"]
 
 ## AWS Globals
 ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
@@ -46,39 +46,43 @@ def main():
   try:
     service = build("drive", "v3", credentials=creds)
 
-    # Call the Drive v3 API
-    results = (
+    response = (
         service.files()
         .list(
-            pageSize=10, fields="nextPageToken, files(id, name)",
+           pageSize=10, fields="nextPageToken, files(id, name, description)",
             q="mimeType='application/vnd.google-apps.folder'",
-         )   
+        )
         .execute()
     )
-    items = results.get("files", [])
 
-    dataset = items[0].get('id')
+    items = response.get('files', [])
 
-    answers = service.files().list(q = "'" + dataset + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
+    for item in items:
+        if item['name'] == 'Dataset':
+            dataset_drive_id = (item['id'])
+
+#lets statrt the query for the folders in dataset folde -- need to refactor and dry it up.. functional programmingr    
+    answers = service.files().list(q = "'" + dataset_drive_id + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
 
     choco = answers.get('files', [])
 
     for file in choco:
+# get the list of folders in dataset folder
         print('\n',file['name'],file['id'])
-        data = service.files().get(fileId=file['id']).execute()
-        print(data)
-
+        response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name)").execute()
+        items.extend(response.get('files', []))
+        pageToken = response.get('nextPageToken')
 
   except HttpError as error:
     # TODO(developer) - Handle errors from drive API.
     print(f"An error occurred: {error}")
 
-
+#need to come back to this -- add this to a list of tests that we can run.. pytest mocking calls to the cloud.. setup test suite to test functionality. Github Actions to test
 def list_s3_buckets():
     client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
-    response = client.list_buckets()
+    response = client.list_buckets.get('Buckets')
     print(response)
 
 if __name__ == "__main__":
   main()
-  list_s3_buckets()
+#  list_s3_buckets()
