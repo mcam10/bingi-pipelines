@@ -18,6 +18,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY quickstart.py .
 
 # Set the entrypoint to run the Python script
-CMD ["python", "quickstart.py"]
+CMD ["python", "sync_gdrive_to_s3.py"]
 ```
 
