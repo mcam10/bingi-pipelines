@@ -18,7 +18,7 @@ SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googlea
 ## AWS Globals
 ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
-def get_credentials(token, credentials):
+def authenticate_google_drive(token, credentials):
 
   """Shows basic usage of the Drive v3 API.
   Prints the names and ids of the first 10 files the user has access to.
@@ -42,58 +42,49 @@ def get_credentials(token, credentials):
     with open(token, "w") as token:
       token.write(creds.to_json())
 
-  try:
+  return creds
+
+
+def get_dataset_files():
+    
+    # Authenticate Google Drive
+    creds = authenticate_google_drive("token.json", "credentials.json")
+    # Connect to Google Drive API
     service = build("drive", "v3", credentials=creds)
-  except:
-    print("error has occured")
+     # Get the list of files 
+    results = service.files().list(pageSize=10, fields="nextPageToken, files(id, name, description)",
+                                  q="mimeType='application/vnd.google-apps.folder'",
+                                  ).execute()
 
+    list_of_folders = results.get('files', [])
 
-def get_files_drives():
-   pass 
+    for folder in list_of_folders:
+        if folder['name'] == 'Dataset':
+           dataset_drive_id = folder['id'] 
+    else: 
+        'Not found'
 
+    query_for_files = service.files().list(q = "'" + dataset_drive_id + "' in parents",
+                                        pageSize=10, fields="nextPageToken, files(id, name)").execute()
+    
+    list_of_files = query_for_files.get('files', [])                                        
 
-'''
+    for file in list_of_files:
+        response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
+        poop = response.get('files',[])
+        for p in poop:
+            print(f"({file['name']}: {p}")
 
-#def main():
-    response = (
-        service.files()
-        .list(
-           pageSize=10, fields="nextPageToken, files(id, name, description)",
-            q="mimeType='application/vnd.google-apps.folder'",
-        )
-        .execute()
-    )
-
-    items = response.get('files', [])
-
-    for item in items:
-        if item['name'] == 'Dataset':
-            dataset_drive_id = (item['id'])
-
-#lets statrt the query for the folders in dataset folde -- need to refactor and dry it up.. functional programmingr    
-    answers = service.files().list(q = "'" + dataset_drive_id + "' in parents", pageSize=10, fields="nextPageToken, files(id, name)").execute()
-
-    choco = answers.get('files', [])
-
-    for file in choco:
-# get the list of folders in dataset folder
-        print('\n',file['name'],file['id'])
-        response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name)").execute()
-        items.extend(response.get('files', []))
-        pageToken = response.get('nextPageToken')
-
-  except HttpError as error:
-    # TODO(developer) - Handle errors from drive API.
-    print(f"An error occurred: {error}")
-
-#need to come back to this -- add this to a list of tests that we can run.. pytest mocking calls to the cloud.. setup test suite to test functionality. Github Actions to test
+def get_list_of_files():
+    pass
+    
 def list_s3_buckets():
     client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
     response = client.list_buckets.get('Buckets')
     print(response)
 '''
 if __name__ == "__main__":
-    get_credentials("token.json","credentials.json")
+    get_dataset_files()
 #  main()
 
 #  list_s3_buckets()
