@@ -18,6 +18,10 @@ SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googlea
 ## AWS Globals
 ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
+client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
+# Connect to AWS S3
+s3 = boto3.client('s3')
+
 def authenticate_google_drive(token, credentials):
 
   """Shows basic usage of the Drive v3 API.
@@ -73,16 +77,21 @@ def get_dataset_files():
         response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
         poop = response.get('files',[])
         for p in poop:
-            print(f"({file['name']}: {p}")
+#file['name'] gives me the folder number
+            file_path = os.path.join(file['name'], p['name'])
+            print(file_path)
+
+            #print(f"({file['name']}: {p}")
+
+
 
 def get_list_of_files():
     pass
     
 def list_s3_buckets():
-    client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
-    response = client.list_buckets.get('Buckets')
-    print(response)
-'''
+    pass
+
+
 if __name__ == "__main__":
     get_dataset_files()
 #  main()
