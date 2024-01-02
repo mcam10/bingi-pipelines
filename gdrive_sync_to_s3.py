@@ -6,10 +6,14 @@ from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.errors import HttpError
 
 #import aws libs
-import boto3
+#import boto3
+
+import localstack_client.session as boto3
+
 
 ## Gdrive Globals
 # If modifying these scopes, delete the file token.json:
@@ -18,9 +22,11 @@ SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googlea
 ## AWS Globals
 ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
-client = boto3.client('s3', endpoint_url=ENDPOINT_URL)
-# Connect to AWS S3
+client = boto3.client('s3')
+
 s3 = boto3.client('s3')
+
+BUCKET_NAME="project-choco"
 
 def authenticate_google_drive(token, credentials):
 
@@ -78,12 +84,16 @@ def get_dataset_files():
         poop = response.get('files',[])
         for p in poop:
 #file['name'] gives me the folder number
-            file_path = os.path.join(file['name'], p['name'])
-            print(file_path)
-
+            request = service.files().get_media(fileId=p['id'])
+            file_name = f'{p["name"]}'
+            with open(file_name, "wb") as fh:
+                downloader = MediaIoBaseDownload(fh, request)
+                done = False
+                while not done:
+                    status, done = downloader.next_chunk()
+#                    file_path = os.path.join(file['name'], file_name)
+                    s3.upload_file(file_name, BUCKET_NAME, file['name'])
             #print(f"({file['name']}: {p}")
-
-
 
 def get_list_of_files():
     pass
