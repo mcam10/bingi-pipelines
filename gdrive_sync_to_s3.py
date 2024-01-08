@@ -11,7 +11,7 @@ from googleapiclient.errors import HttpError
 
 #import aws libs
 #import boto3
-
+import json
 import localstack_client.session as boto3
 
 
@@ -54,46 +54,51 @@ def authenticate_google_drive(token, credentials):
 
   return creds
 
+def get_drive_id(service):
 
-def get_dataset_files():
-    
-    # Authenticate Google Drive
-    creds = authenticate_google_drive("token.json", "credentials.json")
-    # Connect to Google Drive API
-    service = build("drive", "v3", credentials=creds)
-     # Get the list of files 
     results = service.files().list(pageSize=10, fields="nextPageToken, files(id, name, description)",
                                   q="mimeType='application/vnd.google-apps.folder'",
                                   ).execute()
-
-    list_of_folders = results.get('files', [])
+    
+    list_of_folders = results.get('files')
 
     for folder in list_of_folders:
         if folder['name'] == 'Dataset':
            dataset_drive_id = folder['id'] 
     else: 
         'Not found'
+    
+    return dataset_drive_id
 
-    query_for_files = service.files().list(q = "'" + dataset_drive_id + "' in parents",
+def query_for_folder_id(service, drive_id):
+
+    query_for_files = service.files().list(q = "'" + drive_id + "' in parents",
                                         pageSize=10, fields="nextPageToken, files(id, name)").execute()
     
     list_of_files = query_for_files.get('files', [])                                        
 
     for file in list_of_files:
         response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
-        poop = response.get('files',[])
-        for p in poop:
+        print(response.get('files',[]))
+    
+
+
+#    for p in poop:
+      
+
+"""
 #file['name'] gives me the folder number
-            request = service.files().get_media(fileId=p['id'])
-            file_name = f'{p["name"]}'
-            with open(file_name, "wb") as fh:
-                downloader = MediaIoBaseDownload(fh, request)
-                done = False
-                while not done:
-                    status, done = downloader.next_chunk()
-#                    file_path = os.path.join(file['name'], file_name)
-                    s3.upload_file(file_name, BUCKET_NAME, file['name'])
+       request = service.files().get_media(fileId=p['id'])
+       file_name = f'{p["name"]}'
+       with open(file_name, "wb") as fh:
+           downloader = MediaIoBaseDownload(fh, request)
+           done = False
+           while not done:
+                 status, done = downloader.next_chunk()
+#                  file_path = os.path.join(file['name'], file_name)
+#                    s3.upload_file(file_name, BUCKET_NAME, file['name'])
             #print(f"({file['name']}: {p}")
+"""
 
 def get_list_of_files():
     pass
@@ -103,7 +108,11 @@ def list_s3_buckets():
 
 
 if __name__ == "__main__":
-    get_dataset_files()
+    creds = authenticate_google_drive("token.json", "credentials.json")
+    service = build("drive", "v3", credentials=creds)
+    drive_id = get_drive_id(service)
+    folders = query_for_folder_id(service, drive_id)
+
 #  main()
 
 #  list_s3_buckets()
