@@ -77,19 +77,17 @@ def query_for_folder_id(service, drive_id):
     
     list_of_files = query_for_files.get('files', [])                                        
 
+# uh oh double nested for loop o(N)^2
+
     for file in list_of_files:
         response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
-        print(response.get('files',[]))
-    
+        chocolate_images  = response.get('files',[])
 
-
-#    for p in poop:
-      
-
-"""
-#file['name'] gives me the folder number
-       request = service.files().get_media(fileId=p['id'])
-       file_name = f'{p["name"]}'
+        for img in chocolate_images:
+            score_folders = service.files().get_media(fileId=img['id'])
+            score_name = f'{img["name"]}'
+            print( file['name'], score_name)
+"""          
        with open(file_name, "wb") as fh:
            downloader = MediaIoBaseDownload(fh, request)
            done = False
@@ -100,19 +98,13 @@ def query_for_folder_id(service, drive_id):
             #print(f"({file['name']}: {p}")
 """
 
-def get_list_of_files():
-    pass
-    
 def list_s3_buckets():
     pass
-
 
 if __name__ == "__main__":
     creds = authenticate_google_drive("token.json", "credentials.json")
     service = build("drive", "v3", credentials=creds)
     drive_id = get_drive_id(service)
     folders = query_for_folder_id(service, drive_id)
-
-#  main()
 
 #  list_s3_buckets()
