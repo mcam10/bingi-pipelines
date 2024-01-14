@@ -1,5 +1,6 @@
 #import os libs
 import os.path
+import io
 
 #google drive libs
 from google.auth.transport.requests import Request
@@ -72,34 +73,24 @@ def get_drive_id(service):
 def get_image_classes(service, drive_id):
 
     query_for_files = service.files().list(q = "'" + drive_id + "' in parents",
-                                                     pageSize=10, fields="nextPageToken, files(id, name)").execute()
+                                           pageSize=10, fields="nextPageToken, files(id, name)").execute()
     return query_for_files.get('files', [])                                        
 
 def process_image_class(service, list_of_class_folders):
 
     for folder in list_of_class_folders:
-        response = service.files().list(q="'" + folder['id'] + "' in parents",
-                                      pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
+        response = service.files().list(q = "'" + folder['id'] + "' in parents",
+                                       pageSize=10,fields="nextPageToken, files(id, name)").execute()
         chocolate_images  = response.get('files',[])
 
         for img in chocolate_images:
             score_folders = service.files().get_media(fileId=img['id'])
             score_name = f'{img["name"]}'
-            print(folder['name'], score_name)
+            fo = io.BytesIO(b'score_name')
+            s3.upload_fileobj(fo, BUCKET_NAME, folder['name']) 
 
-"""          
-       with open(file_name, "wb") as fh:
-           downloader = MediaIoBaseDownload(fh, request)
-           done = False
-           while not done:
-                 status, done = downloader.next_chunk()
-#                  file_path = os.path.join(file['name'], file_name)
-#                    s3.upload_file(file_name, BUCKET_NAME, file['name'])
-            #print(f"({file['name']}: {p}")
-"""
-
-def list_s3_buckets():
-    pass
+def list_s3_buckets(bucket):
+    return s3.list_objects(Bucket=bucket)
 
 if __name__ == "__main__":
     creds = authenticate_google_drive("token.json", "credentials.json")
@@ -107,5 +98,4 @@ if __name__ == "__main__":
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
     process_image_class = process_image_class(service, list_of_class_folders)
-
-#  list_s3_buckets()
+#    print(list_s3_buckets('project-choco'))
