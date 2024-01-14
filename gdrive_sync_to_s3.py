@@ -1,4 +1,4 @@
-# import os libs
+#import os libs
 import os.path
 
 #google drive libs
@@ -13,6 +13,8 @@ from googleapiclient.errors import HttpError
 #import boto3
 import json
 import localstack_client.session as boto3
+
+from typing import Callable, Iterator, Union, Optional
 
 
 ## Gdrive Globals
@@ -39,7 +41,7 @@ def authenticate_google_drive(token, credentials):
   # time.
   if os.path.exists(token):
     creds = Credentials.from_authorized_user_file(token, SCOPES)
-  # If there are no (valid) credentials available, let the user log in.
+   # If there are no (valid) credentials available, let the user log in.
   if not creds or not creds.valid:
     if creds and creds.expired and creds.refresh_token:
       creds.refresh(Request())
@@ -54,15 +56,9 @@ def authenticate_google_drive(token, credentials):
 
   return creds
 
-def get_drive_id(service):
+def get_drive_id(request_id, response, exception):
 
-    results = service.files().list(pageSize=10, fields="nextPageToken, files(id, name, description)",
-                                  q="mimeType='application/vnd.google-apps.folder'",
-                                  ).execute()
-    
-    list_of_folders = results.get('files')
-
-    for folder in list_of_folders:
+    for folder in response.get('files',[]):
         if folder['name'] == 'Dataset':
            dataset_drive_id = folder['id'] 
     else: 
@@ -70,23 +66,37 @@ def get_drive_id(service):
     
     return dataset_drive_id
 
-def query_for_folder_id(service, drive_id):
+def query_for_folder_id(request_id, response, exception, callback ):
 
-    query_for_files = service.files().list(q = "'" + drive_id + "' in parents",
-                                        pageSize=10, fields="nextPageToken, files(id, name)").execute()
+    if exception is not None:
+        print(exception)
+    else:
+        return response.get('files', [])
+
+def get_image_class(request_id, response, exception):
+
+    if exception is not None:
+        print(exception)
+    else:
+        print(chocolate_images)
+
+ #   query_for_files = service.files().list(q = "'" + drive_id + "' in parents",
+              #                                        pageSize=10, fields="nextPageToken, files(id, name)").execute()
     
-    list_of_files = query_for_files.get('files', [])                                        
+#    list_of_folder_classes = query_for_files.get('files', [])                                        
 
 # uh oh double nested for loop o(N)^2
-
-    for file in list_of_files:
-        response = service.files().list(q="'" + file['id'] + "' in parents", pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
+"""
+    for folder_class in list_of_folder_classes:
+        response = service.files().list(q="'" + folder_class['id'] + "' in parents",
+                                      pageSize=1000,fields="nextPageToken, files(id, name, description)").execute()
         chocolate_images  = response.get('files',[])
 
         for img in chocolate_images:
             score_folders = service.files().get_media(fileId=img['id'])
             score_name = f'{img["name"]}'
-            print( file['name'], score_name)
+            print( folder_class['name'], score_name)
+"""
 """          
        with open(file_name, "wb") as fh:
            downloader = MediaIoBaseDownload(fh, request)
@@ -104,7 +114,18 @@ def list_s3_buckets():
 if __name__ == "__main__":
     creds = authenticate_google_drive("token.json", "credentials.json")
     service = build("drive", "v3", credentials=creds)
-    drive_id = get_drive_id(service)
-    folders = query_for_folder_id(service, drive_id)
+
+    batch = service.new_batch_http_request(callback=get_drive_id)
+
+    batch.add(service.files().list(pageSize=10, fields="nextPageToken, files(id, name, description)",
+                                  q="mimeType='application/vnd.google-apps.folder'",
+                                  ))
+
+# need to figure out how to pass the drive_id to the next query for each of the image_folders
+    batch.add(service.files().list(q = "'" + batch.execute() + "' in parents",
+                                        pageSize=10, fields="nextPageToken, files(id,name)"))
+
+
+#    folders = query_for_folder_id(service, drive_id)
 
 #  list_s3_buckets()
