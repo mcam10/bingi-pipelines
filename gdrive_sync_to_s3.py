@@ -15,7 +15,7 @@ from googleapiclient.errors import HttpError
 import json
 import localstack_client.session as boto3
 
-from typing import Callable, Iterator, Union, Optional
+from typing import List, Set, Dict, Tuple
 
 
 ## Gdrive Globals
@@ -31,7 +31,9 @@ s3 = boto3.client('s3')
 
 BUCKET_NAME="project-choco"
 
-def authenticate_google_drive(token, credentials):
+
+# need to validate the return type here
+def authenticate_google_drive(token: str, credentials:str) -> str:
 
   """Shows basic usage of the Drive v3 API.
   Prints the names and ids of the first 10 files the user has access to.
@@ -70,13 +72,13 @@ def get_drive_id(service):
         'Not found'
     return dataset_drive_id
 
-def get_image_classes(service, drive_id):
+def get_image_classes(service, drive_id: str) -> List:
 
     query_for_files = service.files().list(q = "'" + drive_id + "' in parents",
                                            pageSize=10, fields="nextPageToken, files(id, name)").execute()
     return query_for_files.get('files', [])                                        
 
-def process_image_class(service, list_of_class_folders):
+def process_image_class(service, list_of_class_folders: List) -> None:
 
     for folder in list_of_class_folders:
         response = service.files().list(q = "'" + folder['id'] + "' in parents",
@@ -87,7 +89,8 @@ def process_image_class(service, list_of_class_folders):
             score_folders = service.files().get_media(fileId=img['id'])
             score_name = f'{img["name"]}'
             fo = io.BytesIO(b'score_name')
-            s3.upload_fileobj(fo, BUCKET_NAME, folder['name']) 
+            print(fo)
+#            s3.upload_fileobj(fo, BUCKET_NAME, folder['name']) 
 
 def list_s3_buckets(bucket):
     return s3.list_objects(Bucket=bucket)
