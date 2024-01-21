@@ -88,18 +88,13 @@ def process_image_class(service, list_of_class_folders: List) -> None:
         for img in chocolate_images:
             score_folders = service.files().get_media(fileId=img['id'])
             score_name = f'{img["name"]}'
-            with open(score_name,'rb') as chocolate_image: 
-                download = MediaIoBaseDownload(chocolate_image, request)
+            with open(score_name,'wb') as chocolate_image: 
+                downloader = MediaIoBaseDownload(chocolate_image, score_folders)
                 done = False
                 while not done:
                     status, done = downloader.next_chunk()
                     file_path = os.path.join(folder['name'], score_name)
-#                s3.uploadobj(chocolate_image, BUCKET_NAME, score_name)
-#            fo = io.BytesIO(b'score_name')
-#            s3.upload_fileobj(fo, BUCKET_NAME, score_name)
-#           fo = io.BytesIO(b'score_name')
-#           print(fo)
-#            s3.upload_fileobj(fo, BUCKET_NAME, folder['name']) 
+                    s3.upload_file(score_name, BUCKET_NAME, file_path)
 
 def list_s3_buckets(bucket):
     return s3.list_objects(Bucket=bucket)
@@ -110,7 +105,3 @@ if __name__ == "__main__":
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
     process_image_class = process_image_class(service, list_of_class_folders)
-    mybucket = s3.Bucket(BUCKET)
-    for obj in mybucket.objects.all():
-        print(obj)
-#    print(list_s3_buckets('project-choco'))
