@@ -93,8 +93,11 @@ def process_image_class(service, list_of_class_folders: List) -> None:
                 done = False
                 while not done:
                     status, done = downloader.next_chunk()
+                    if status:
+                        print("Download %d%%." % int(status.progress() * 100))
                     file_path = os.path.join(folder['name'], score_name)
                     s3.upload_file(score_name, BUCKET_NAME, file_path)
+                print("Upload Complete!")
 
 def list_s3_buckets(bucket):
     return s3.list_objects(Bucket=bucket)
