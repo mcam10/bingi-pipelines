@@ -96,11 +96,12 @@ def process_image_class(service, list_of_class_folders: List) -> None:
                     if status:
                         print("Download %d%%." % int(status.progress() * 100))
                     file_path = os.path.join(folder['name'], score_name)
-                    s3.upload_file(score_name, BUCKET_NAME, file_path)
-                print("Upload Complete!")
-
-def list_s3_buckets(bucket):
-    return s3.list_objects(Bucket=bucket)
+                    # lets add a check here before we upload
+                    if s3.head_object(Bucket=BUCKET_NAME, Key=file_path):
+                        continue
+                    else:
+                        s3.upload_file(score_name, BUCKET_NAME, file_path)
+            print("Upload Complete!")
 
 if __name__ == "__main__":
     creds = authenticate_google_drive("token.json", "credentials.json")
