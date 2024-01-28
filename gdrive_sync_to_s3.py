@@ -44,20 +44,19 @@ def authenticate_google_drive(token: str, credentials:str) -> str:
   # time.
   if os.path.exists(token):
     creds = Credentials.from_authorized_user_file(token, SCOPES)
-   # If there are no (valid) credentials available, let the user log in.
-  if not creds or not creds.valid:
-    if creds and creds.expired and creds.refresh_token:
-      creds.refresh(Request())
-    else:
-      flow = InstalledAppFlow.from_client_secrets_file(
-          credentials, SCOPES
-      )
-      creds = flow.run_local_server(port=0)
-    # Save the credentials for the next run
-    with open(token, "w") as token:
+    if creds.expired and not creds.valid:
+        os.remove(token)
+  
+  flow = InstalledAppFlow.from_client_secrets_file(
+          credentials, SCOPES)
+  
+  creds = flow.run_local_server(port=0)
+
+  with open(token, "w") as token:
       token.write(creds.to_json())
 
   return creds
+
 
 def get_drive_id(service):
 
