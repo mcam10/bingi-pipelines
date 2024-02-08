@@ -13,6 +13,7 @@ from googleapiclient.errors import HttpError
 #import aws libs
 #import boto3
 import json
+from botocore.exceptions import ClientError
 import localstack_client.session as boto3
 
 from typing import List, Set, Dict, Tuple
@@ -96,10 +97,11 @@ def process_image_class(service, list_of_class_folders: List) -> None:
                         print("Download %d%%." % int(status.progress() * 100))
                     file_path = os.path.join(folder['name'], score_name)
                     # lets add a check here before we upload
-                    if s3.head_object(Bucket=BUCKET_NAME, Key=file_path):
-                        continue
-                    else:
-                        s3.upload_file(score_name, BUCKET_NAME, file_path)
+                    try:
+                         s3.head_object(Bucket=BUCKET_NAME, Key=file_path)
+                    except ClientError as e:
+                        if e.response['Error']['Code'] == '404' or e.response['Error']['Code'] == 'NoSuchKey':
+                            s3.upload_file(score_name, BUCKET_NAME, file_path)
             print("Upload Complete!")
 
 if __name__ == "__main__":
