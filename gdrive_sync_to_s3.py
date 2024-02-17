@@ -102,7 +102,8 @@ def process_image_class(service, list_of_class_folders: List) -> None:
                     except ClientError as e:
                         if e.response['Error']['Code'] == '404' or e.response['Error']['Code'] == 'NoSuchKey':
                             s3.upload_file(score_name, BUCKET_NAME, file_path)
-            print("Upload Complete!")
+
+    print("Upload Complete!")
 
 if __name__ == "__main__":
     creds = authenticate_google_drive("token.json", "credentials.json")
