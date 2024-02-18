@@ -37,17 +37,9 @@ BUCKET_NAME="project-choco"
 # need to validate the return type here
 def authenticate_google_drive(service_account_file: str) -> str:
 
-  """Shows basic usage of the Drive v3 API.
-  Prints the names and ids of the first 10 files the user has access to.
-  """
-  creds = None
-  # The file token.json stores the user's access and refresh tokens, and is
-  # created automatically when the authorization flow completes for the first
-  # time.
   credentials = service_account.Credentials.from_service_account_file(service_account_file)
 
   return credentials
-
 
 def get_drive_id(service):
 
