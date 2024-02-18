@@ -9,6 +9,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaIoBaseDownload
 from googleapiclient.errors import HttpError
+from google.oauth2 import service_account
 
 #import aws libs
 #import boto3
@@ -34,7 +35,7 @@ BUCKET_NAME="project-choco"
 
 
 # need to validate the return type here
-def authenticate_google_drive(token: str, credentials:str) -> str:
+def authenticate_google_drive(service_account_file: str) -> str:
 
   """Shows basic usage of the Drive v3 API.
   Prints the names and ids of the first 10 files the user has access to.
@@ -43,20 +44,9 @@ def authenticate_google_drive(token: str, credentials:str) -> str:
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
   # time.
-  if os.path.exists(token):
-    creds = Credentials.from_authorized_user_file(token, SCOPES)
-    if creds.expired and not creds.valid:
-        os.remove(token)
-  
-  flow = InstalledAppFlow.from_client_secrets_file(
-          credentials, SCOPES)
-  
-  creds = flow.run_local_server(port=0)
+  credentials = service_account.Credentials.from_service_account_file(service_account_file)
 
-  with open(token, "w") as token:
-      token.write(creds.to_json())
-
-  return creds
+  return credentials
 
 
 def get_drive_id(service):
@@ -106,7 +96,7 @@ def process_image_class(service, list_of_class_folders: List) -> None:
     print("Upload Complete!")
 
 if __name__ == "__main__":
-    creds = authenticate_google_drive("token.json", "credentials.json")
+    creds = authenticate_google_drive("project-choco-key.json")
     service = build("drive", "v3", credentials=creds)
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
