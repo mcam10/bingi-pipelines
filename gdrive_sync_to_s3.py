@@ -1,6 +1,7 @@
 #import os libs
 import os.path
 import io
+import time
 
 #google drive libs
 from google.auth.transport.requests import Request
@@ -12,12 +13,16 @@ from googleapiclient.errors import HttpError
 from google.oauth2 import service_account
 
 #import aws libs
-#import boto3
+import boto3
 import json
 from botocore.exceptions import ClientError
-import localstack_client.session as boto3
+#import localstack_client.session as boto3
 
 from typing import List, Set, Dict, Tuple
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 ## Gdrive Globals
@@ -25,14 +30,23 @@ from typing import List, Set, Dict, Tuple
 SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.metadata.readonly"]
 
 ## AWS Globals
-ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
+#ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
-client = boto3.client('s3')
+#client = boto3.client('s3')
 
-s3 = boto3.client('s3')
+#s3 = boto3.client('s3')
 
-BUCKET_NAME="project-choco"
+BUCKET_NAME="project-chocolate"
 
+#s3 = boto3.resource('s3')
+
+s3_client = boto3.client('s3',
+                      aws_access_key_id=os.getenv('Accesskey'),
+                      aws_secret_access_key=os.getenv('Secretaccesskey'),
+                      region_name="us-east-1"
+                      )
+
+#bucket = s3_client.Bucket(BUCKET_NAME)
 
 # need to validate the return type here
 def authenticate_google_drive(service_account_file: str) -> str:
@@ -80,16 +94,25 @@ def process_image_class(service, list_of_class_folders: List) -> None:
                     file_path = os.path.join(folder['name'], score_name)
                     # lets add a check here before we upload
                     try:
-                         s3.head_object(Bucket=BUCKET_NAME, Key=file_path)
+                         s3_client.head_object(Bucket=BUCKET_NAME, Key=file_path)
                     except ClientError as e:
                         if e.response['Error']['Code'] == '404' or e.response['Error']['Code'] == 'NoSuchKey':
-                            s3.upload_file(score_name, BUCKET_NAME, file_path)
+                            s3_client.upload_file(score_name, BUCKET_NAME, file_path)
 
     print("Upload Complete!")
 
 if __name__ == "__main__":
-    creds = authenticate_google_drive("project-choco-key.json")
+    start = time.time()
+    creds = authenticate_google_drive("decisive-fabric-155319-3dcd7ac1c659.json")
     service = build("drive", "v3", credentials=creds)
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
-    process_image_class = process_image_class(service, list_of_class_folders)
+    obj = s3_client.get_object(Bucket=BUCKET_NAME, Key="72530073970__4DB32599-9DEC-4CEC-9173-C3339CA5E9AC.JPEG")
+    print(obj)
+
+#    print(bucket.objects.all())
+#    for obj in bucket.objects.all():
+#        print(obj.key)
+
+#    process_image_class = process_image_class(service, list_of_class_folders)
+    print('It took', time.time()-start, 'seconds.')
