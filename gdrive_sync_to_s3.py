@@ -25,6 +25,10 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
+#thinking about passing SA account as a command-line arg
+import sys
+
+
 ## Gdrive Globals
 # If modifying these scopes, delete the file token.json:
 SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googleapis.com/auth/drive", "https://www.googleapis.com/auth/drive.metadata.readonly"]
@@ -96,11 +100,14 @@ def process_image_class(service, list_of_class_folders: List) -> None:
     print("Upload Complete!")
 
 if __name__ == "__main__":
-    start = time.time()
-    creds = authenticate_google_drive("decisive-fabric-155319-3dcd7ac1c659.json")
-    service = build("drive", "v3", credentials=creds)
-    drive_id = get_drive_id(service)
-    list_of_class_folders = get_image_classes(service, drive_id)
-    process_image_class = process_image_class(service, list_of_class_folders)
-    print('It took', time.time()-start, 'seconds.')
-    
+    #lets first check the proper command line args exist first -- if not, let's not even start the script"
+    if os.path.isfile(sys.argv[1]):
+        start = time.time()
+        creds = authenticate_google_drive(sys.argv[1])
+        service = build("drive", "v3", credentials=creds)
+        drive_id = get_drive_id(service)
+        list_of_class_folders = get_image_classes(service, drive_id)
+        process_image_class = process_image_class(service, list_of_class_folders)
+        print('It took', time.time()-start, 'seconds.')
+    else:
+        print("The arg provided must be a file")
