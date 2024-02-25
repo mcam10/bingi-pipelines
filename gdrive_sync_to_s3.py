@@ -32,13 +32,8 @@ SCOPES = ["https://www.googleapis.com/auth/drive.metadata", "https://www.googlea
 ## AWS Globals
 #ENDPOINT_URL = "http://localhost.localstack.cloud:4566"
 
-#client = boto3.client('s3')
-
-#s3 = boto3.client('s3')
-
 BUCKET_NAME="project-chocolate"
 
-#s3 = boto3.resource('s3')
 
 s3_client = boto3.client('s3',
                       aws_access_key_id=os.getenv('Accesskey'),
@@ -46,7 +41,6 @@ s3_client = boto3.client('s3',
                       region_name="us-east-1"
                       )
 
-#bucket = s3_client.Bucket(BUCKET_NAME)
 
 # need to validate the return type here
 def authenticate_google_drive(service_account_file: str) -> str:
@@ -107,12 +101,6 @@ if __name__ == "__main__":
     service = build("drive", "v3", credentials=creds)
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
-    obj = s3_client.get_object(Bucket=BUCKET_NAME, Key="72530073970__4DB32599-9DEC-4CEC-9173-C3339CA5E9AC.JPEG")
-    print(obj)
-
-#    print(bucket.objects.all())
-#    for obj in bucket.objects.all():
-#        print(obj.key)
-
-#    process_image_class = process_image_class(service, list_of_class_folders)
+    process_image_class = process_image_class(service, list_of_class_folders)
     print('It took', time.time()-start, 'seconds.')
+    
