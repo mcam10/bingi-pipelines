@@ -24,7 +24,8 @@ pip install -r requirements.txt or docker build -t sync-photos .
 ## Usage
 
 ```python
-docker run sync-photos
+python gdrive_sync_to_s3.py $service-account-file
+docker run $name-of-local-image-build $service-account-file
 ```
 
 ## Contributing
