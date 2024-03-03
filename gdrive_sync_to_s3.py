@@ -107,4 +107,4 @@ if __name__ == "__main__":
     drive_id = get_drive_id(service)
     list_of_class_folders = get_image_classes(service, drive_id)
     process_image_class = process_image_class(service, list_of_class_folders)
-    print('It took', time.time()-start, 'seconds.')
+    print('This Job took', time.time()-start, 'seconds.')
