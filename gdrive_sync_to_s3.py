@@ -101,13 +101,10 @@ def process_image_class(service, list_of_class_folders: List) -> None:
 
 if __name__ == "__main__":
     #lets first check the proper command line args exist first -- if not, let's not even start the script"
-    if os.path.isfile(sys.argv[1]):
-        start = time.time()
-        creds = authenticate_google_drive(sys.argv[1])
-        service = build("drive", "v3", credentials=creds)
-        drive_id = get_drive_id(service)
-        list_of_class_folders = get_image_classes(service, drive_id)
-        process_image_class = process_image_class(service, list_of_class_folders)
-        print('It took', time.time()-start, 'seconds.')
-    else:
-        print("The arg provided must be a file")
+    start = time.time()
+    creds = authenticate_google_drive(os.getenv('SERVICE_ACCOUNT_FILE'))
+    service = build("drive", "v3", credentials=creds)
+    drive_id = get_drive_id(service)
+    list_of_class_folders = get_image_classes(service, drive_id)
+    process_image_class = process_image_class(service, list_of_class_folders)
+    print('It took', time.time()-start, 'seconds.')

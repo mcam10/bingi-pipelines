@@ -15,11 +15,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy your Python script to the working directory
-COPY sync_gdrive_to_s3.py .
-
-ARG SERVICE_ACCOUNT_FILE
+COPY gdrive_sync_to_s3.py .
 
 # Set the entrypoint to run the Python script
-CMD ["python", "sync_gdrive_to_s3.py", "$service-account-file"]
-```
+ENTRYPOINT ["python", "gdrive_sync_to_s3.py"]
 
