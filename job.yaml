@@ -1,0 +1,28 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  creationTimestamp: null
+  name: my-job
+  namespace: python-scripts
+spec:
+  jobTemplate:
+    metadata:
+      creationTimestamp: null
+      name: my-job
+    spec:
+      template:
+        metadata:
+          creationTimestamp: null
+        spec:
+          containers:
+          - image: gdrive-aws-sync
+            imagePullPolicy: IfNotPresent
+            command: 
+            - /bin/sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+            name: my-job
+            resources: {}
+          restartPolicy: OnFailure
+  schedule: '*/5 * * * *'
+status: {}
