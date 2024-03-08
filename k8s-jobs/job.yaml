@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: gdrive-aws-sync
+  namespace: gdrive-aws-jobs
+spec:
+    schedule: "*/5 * * * *"
+    jobTemplate:
+      spec:
+        template:
+          spec:
+            containers:
+            - name: gdrive-aws-sync
+              image: gdrive-aws-sync:latest
+              imagePullPolicy: gdrive-aws-sync:latest
+            restartPolicy: Never
