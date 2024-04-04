@@ -1,4 +1,5 @@
 FROM python:3.10-slim
+LABEL org.opencontainers.image.source https://github.com/$OWNER/$REPO
 
 # Set the working directory
 WORKDIR /app

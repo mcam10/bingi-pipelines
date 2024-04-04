@@ -1,28 +1,32 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  creationTimestamp: null
   name: my-job
   namespace: python-scripts
 spec:
+  schedule: '*/5 * * * *'
   jobTemplate:
-    metadata:
-      creationTimestamp: null
-      name: my-job
     spec:
       template:
-        metadata:
-          creationTimestamp: null
         spec:
           containers:
-          - image: gdrive-aws-sync
+          - name: gdrive-sync
+            image: gdrive-aws-sync:latest
+            command:
+              - /bin/sh
+              - "-c"
+              - "cat /etc/secret-volume/.env && cat /etc/secret-volume/decisive-fabric-155319-3dcd7ac1c659.json"
             imagePullPolicy: IfNotPresent
-            command: 
-            - /bin/sh
-            - -c
-            - date; echo Hello from the Kubernetes cluster
-            name: my-job
-            resources: {}
+            volumeMounts:
+            - name: secret-volume
+              readOnly: true
+              mountPath: "/app"
           restartPolicy: OnFailure
-  schedule: '*/5 * * * *'
-status: {}
+          volumes: 
+              - name: secret-volume
+                projected:
+                    sources: 
+                    - secret:
+                        name: gdrive-aws-sync-creds
+                    - secret:
+                        name: gdrive-sa-file
