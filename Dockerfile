@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install required Python libraries
-COPY requirements.txt .
+COPY requirements.txt /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy your Python script to the working directory
-COPY gdrive_sync_to_s3.py .
+COPY gdrive_sync_to_s3.py /app
 
 # Set the entrypoint to run the Python script
 ENTRYPOINT ["python", "gdrive_sync_to_s3.py"]

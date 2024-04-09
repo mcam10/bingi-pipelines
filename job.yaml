@@ -11,16 +11,16 @@ spec:
         spec:
           containers:
           - name: gdrive-sync
-            image: gdrive-aws-sync:latest
+            image: google-aws-sync:1.0
             command:
               - /bin/sh
               - "-c"
-              - "cat /etc/secret-volume/.env && cat /etc/secret-volume/decisive-fabric-155319-3dcd7ac1c659.json"
+              - "ls /etc/secrets"
             imagePullPolicy: IfNotPresent
             volumeMounts:
             - name: secret-volume
               readOnly: true
-              mountPath: "/app"
+              mountPath: "/etc/secrets"
           restartPolicy: OnFailure
           volumes: 
               - name: secret-volume
