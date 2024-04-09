@@ -12,10 +12,6 @@ spec:
           containers:
           - name: gdrive-sync
             image: google-aws-sync:1.0
-            command:
-              - /bin/sh
-              - "-c"
-              - "ls /etc/secrets"
             imagePullPolicy: IfNotPresent
             volumeMounts:
             - name: secret-volume
