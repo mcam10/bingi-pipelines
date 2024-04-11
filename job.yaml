@@ -13,6 +13,9 @@ spec:
           - name: gdrive-sync
             image: google-aws-sync:1.0
             imagePullPolicy: IfNotPresent
+            env:
+            - name: SERVICE_ACCOUNT_FILE
+              value: "/etc/secrets/decisive-fabric-155319-3dcd7ac1c659.json"
             volumeMounts:
             - name: secret-volume
               readOnly: true
