@@ -4,7 +4,7 @@ metadata:
   name: my-job
   namespace: python-scripts
 spec:
-  schedule: '*/5 * * * *'
+  schedule: '0 0 * * 0'
   jobTemplate:
     spec:
       template:
@@ -16,6 +16,9 @@ spec:
             env:
             - name: SERVICE_ACCOUNT_FILE
               value: "/etc/secrets/decisive-fabric-155319-3dcd7ac1c659.json"
+            envFrom:
+            - secretRef:
+                name: aws-s3-secret  
             volumeMounts:
             - name: secret-volume
               readOnly: true
