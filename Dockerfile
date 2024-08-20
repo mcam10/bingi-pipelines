@@ -19,5 +19,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY gdrive_sync_to_s3.py /app
 
 # Set the entrypoint to run the Python script
-ENTRYPOINT ["python", "gdrive_sync_to_s3.py"]
+CMD ["python", "./gdrive_sync_to_s3.py"]
 
