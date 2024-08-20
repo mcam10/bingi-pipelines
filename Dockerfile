@@ -5,7 +5,7 @@ LABEL org.opencontainers.image.source https://github.com/$OWNER/$REPO
 WORKDIR /app
 
 # Install necessary packages
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get upgrade && apt-get install -y \
     gcc \
     libffi-dev \
     libssl-dev \
