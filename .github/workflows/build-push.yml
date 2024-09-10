@@ -70,5 +70,6 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
           registry: ${{ env.REGISTRY }}
           image: ${{ steps.meta.outputs.tags }}
+          shell: python
           run: |
-             "python gdrive_sync_to_s3.py"
+             "gdrive_sync_to_s3.py"
