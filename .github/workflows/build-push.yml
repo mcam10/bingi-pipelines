@@ -71,6 +71,6 @@ jobs:
         uses: addnab/docker-run-action@v3
         with:
           registry: ${{ env.REGISTRY }}
-          image: gdrive-aws-data:sha256:264030b8d4262b95edadcff43bf70891d60da595298939e889567411a26a8e21
+          image: mcam10/gdrive-aws-data:sha256:264030b8d4262b95edadcff43bf70891d60da595298939e889567411a26a8e21
           run: |
              "python gdrive_sync_to_s3.py"
