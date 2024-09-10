@@ -32,6 +32,8 @@ jobs:
           Secretaccesskey: ${{ secrets.SECRETSACCESSKEY }}
           SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
       - run: |
+          ls
+          printenv
           pip install -r requirements.txt
           python gdrive_sync_to_s3.py
 
