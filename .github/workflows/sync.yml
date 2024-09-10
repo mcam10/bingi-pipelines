@@ -9,7 +9,7 @@ env: # Or as an environment variable
   SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
 
 jobs:
-  build-and-push-image:
+  sync-to-s3:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -34,8 +34,6 @@ jobs:
         with:
           python-version: '3.9'  
       - run: |
-          ls
-          printenv
           pip install -r requirements.txt
           python gdrive_sync_to_s3.py
 
