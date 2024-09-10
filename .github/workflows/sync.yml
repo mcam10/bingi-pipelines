@@ -2,6 +2,12 @@ name: Sync Gdrive AWS S3
 
 on:
     workflow_dispatch:
+
+env: # Or as an environment variable
+  AccessKey: ${{ secrets.ACCESSKEY }}
+  Secretaccesskey: ${{ secrets.SECRETSACCESSKEY }}
+  SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
+
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
