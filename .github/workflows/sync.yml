@@ -14,14 +14,14 @@ jobs:
         with: 
           base64-encoded-secret: ${{ secrets.SERVICE_ACCOUNT }}  
           filename: decisive-fabric-155319-3dcd7ac1c659.json
-          working-directory: "."
+          working-directory: "/home/runner/work/gdrive-aws-data/gdrive-aws-data"
           # Has to be a better way to do this DRY
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.ENV }}  
           filename: decisive-fabric-155319-3dcd7ac1c659.json
-          working-directory: "."
+          working-directory: "/home/runner/work/gdrive-aws-data/gdrive-aws-data"
 
       - name: Lets run some python code
         uses: actions/setup-python@v5
