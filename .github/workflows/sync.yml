@@ -26,17 +26,13 @@ jobs:
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.ENV }}  
-          filename: decisive-fabric-155319-3dcd7ac1c659.json
+          filename: .env
           working-directory: "/home/runner/work/gdrive-aws-data/gdrive-aws-data"
 
       - name: Lets run some python code
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'  
-        env: # Or as an environment variable
-          AccessKey: ${{ secrets.ACCESSKEY }}
-          Secretaccesskey: ${{ secrets.SECRETSACCESSKEY }}
-          SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
       - run: |
           ls
           printenv
