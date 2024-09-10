@@ -3,8 +3,7 @@ name: Create and publish a Docker image
 
 # Configures this workflow to run every time a change is pushed to the branch called `release`.
 on:
-  push:
-    branches: ['master']
+  workflow_dispatch:
 
 # Defines two custom environment variables for the workflow. These are used for the Container registry domain, and a name for the Docker image that this workflow builds.
 env:
@@ -61,4 +60,17 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
+      - name: Get Secrets
+        uses: mobiledevops/secret-to-file-action@v1
+        with: 
+          base64-encoded-secret: ${{ secrets.SERVICE_ACCOUNT }}  
+          filename: decisive-fabric-155319-3dcd7ac1c659.json
+          working-directory: "."
 
+      - name: Run Docker image
+        uses: addnab/docker-run-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          image: mcam10/gdrive-aws-data:sha-e030056
+          run: |
+             "python gdrive_sync_to_s3.py"
