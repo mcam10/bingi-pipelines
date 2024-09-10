@@ -2,41 +2,30 @@ name: Sync Gdrive AWS S3
 
 on:
     workflow_dispatch:
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-      attestations: write
-      id-token: write
-      # 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
-      # Uses the `docker/login-action` action to log in to the Container registry registry using the account and password that will publish the packages. Once published, the packages are scoped to the account defined here.
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Get Secrets
+
+      - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.SERVICE_ACCOUNT }}  
           filename: decisive-fabric-155319-3dcd7ac1c659.json
           working-directory: "."
+          # Has to be a better way to do this DRY
+      - name: Inject Secrets to Directory
+        uses: mobiledevops/secret-to-file-action@v1
+        with: 
+          base64-encoded-secret: ${{ secrets.ENV }}  
+          filename: decisive-fabric-155319-3dcd7ac1c659.json
+          working-directory: "."
 
-      - name: Run Docker image
-        uses: addnab/docker-run-action@v3
+        uses: actions/checkout@v4
+        uses: actions/setup-python@v5
         with:
-          registry: ${{ env.REGISTRY }}
-          image: mcam10/gdrive-aws-data:sha-e030056
-          run: |
-             "python gdrive_sync_to_s3.py"
+          python-version: '3.9'  
+      - run: python gdrive_sync_to_s3.py
 
 
