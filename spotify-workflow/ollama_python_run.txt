@@ -1,0 +1,66 @@
+ollama run llama3
+>>> Write me python code to connect to the spotify web playback api to play songs
+Here's a Python script that connects to Spotify's Web Playback API and plays songs:
+```python
+import requests
+import json
+import time
+
+# Set your Spotify client ID, secret, and redirect URI
+client_id = "YOUR_CLIENT_ID"
+client_secret = "YOUR_CLIENT_SECRET"
+redirect_uri = "YOUR_REDIRECT_URI"
+
+# Set the scope and grant type for authentication
+scope = "user-library-read playlist-read-private"
+grant_type = "client_credentials"
+
+# Get an access token using your client ID and secret
+auth_response = requests.post(
+    f"https://accounts.spotify.com/api/token",
+    headers={"Content-Type": "application/x-www-form-urlencoded"},
+    data=f"grant_type={grant_type}&client_id={client_id}&client_secret={client_secret}",
+)
+
+access_token = json.loads(auth_response.text)["access_token"]
+
+# Set the Spotify API endpoint and parameters
+endpoint = "https://api.spotify.com/v1/playlists"
+params = {"offset": 0, "limit": 50}
+
+# Get a list of playlists using your access token
+playlists_response = requests.get(endpoint, params=params, headers={"Authorization": f"Bearer
+{access_token}"])
+
+# Parse the JSON response and get the first playlist's ID
+playlist_id = json.loads(playlists_response.text)["items"][0]["uri"].split(":")[-1]
+
+# Set the endpoint for getting tracks from a playlist
+tracks_endpoint = f"https://api.spotify.com/v1/playlists/{playlist_id}/tracks"
+
+# Get the tracks from the playlist using your access token
+tracks_response = requests.get(tracks_endpoint, params=params, headers={"Authorization": f"Bearer
+{access_token}"})
+
+# Parse the JSON response and get the first track's ID
+track_id = json.loads(tracks_response.text)["items"][0]["uri"].split(":")[-1]
+
+# Set the endpoint for playing a track
+play_endpoint = "https://api.spotify.com/v1/me/player"
+
+# Set the request body to play the track
+play_request_body = {"context_uri": f"spotify:track:{track_id}", "position_ms": 0}
+
+# Play the track using your access token
+play_response = requests.put(play_endpoint, json=play_request_body, headers={"Authorization":
+f"Bearer {access_token}"})
+
+print("Playing song...")
+```
+This script does the following:
+
+1. Authenticates with Spotify's API using a client ID and secret.
+2. Retrieves a list of playlists for the authenticated user.
+3. Gets the ID of the first playlist and uses it to retrieve its tracks.
+4. Gets the ID of the first track in the playlist and sets up the request body to play it.
+5. Sends the request to start playing the track using the access token.
