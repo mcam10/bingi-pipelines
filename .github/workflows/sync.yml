@@ -15,8 +15,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - run: |
-         cd gdrive-aws-data-sync-workflow
-         pip install -r requirements.txt 
+         ls -lah
+#         #pip install -r requirements.txt 
 
       - name: Checkout repository
         uses: actions/setup-python@v5
