@@ -32,7 +32,6 @@ jobs:
       - name: Lets run some python code
         uses: actions/setup-python@v5
         with:
-          working-directory: "/home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow"
           python-version: '3.9'  
       - run: |
           cd /home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow
