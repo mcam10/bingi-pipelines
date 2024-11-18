@@ -14,14 +14,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - run: |
+         cd gdrive-aws-data-sync-workflow
+         pip install -r requirements.txt 
 
       - name: Checkout repository
         uses: actions/setup-python@v5
         with:
           python-version: '3.9'  
-      - run: |
-         cd gdrive-aws-data-sync-workflow
-         pip install -r requirements.txt 
 
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
@@ -37,7 +37,6 @@ jobs:
           filename: .env
           working-directory: "/home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow"
       - run: |
-          cd /home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow
-          python gdrive_sync_to_s3.py
+          python /home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow/gdrive_sync_to_s3.py
 
 
