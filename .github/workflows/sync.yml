@@ -35,6 +35,7 @@ jobs:
           working-directory: "/home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow"
           python-version: '3.9'  
       - run: |
+          cd /home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow
           pip install -r requirements.txt 
           python gdrive_sync_to_s3.py
 
