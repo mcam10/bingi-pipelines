@@ -20,9 +20,8 @@ jobs:
         with:
           python-version: '3.9'  
       - run: |
-          ls
-#          cd /home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow
-#          pip install -r requirements.txt 
+         cd gdrive-aws-data-sync-workflow
+         pip install -r requirements.txt 
 
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
