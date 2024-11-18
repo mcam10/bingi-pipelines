@@ -17,6 +17,8 @@ jobs:
         with:
           sparse-checkout: |  
             gdrive-aws-sync-workflow
+        run: | 
+          cd gdrive-aws-sync-workflow
 
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
