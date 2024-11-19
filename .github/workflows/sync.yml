@@ -36,5 +36,5 @@ jobs:
           filename: .env
           working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-data-sync-workflow"
       - run: |
-          cd gdrive-aws-sync-workflow && source .env && pip install -r requirements.txt && python gdrive_sync_to_s3.py
+          ls -lah && ls -lah gdrive-aws-sync-workflow 
 
