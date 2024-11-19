@@ -36,5 +36,5 @@ jobs:
           filename: .env
           working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-data-sync-workflow"
       - run: |
-          ls -lah && ls -lah gdrive-aws-sync-workflow 
+          pwd && ls -lah gdrive-aws-sync-workflow 
 
