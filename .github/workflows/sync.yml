@@ -25,14 +25,14 @@ jobs:
         with: 
           base64-encoded-secret: ${{ secrets.SERVICE_ACCOUNT }}  
           filename: decisive-fabric-155319-3dcd7ac1c659.json
-          working-directory: "/home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow"
+          working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-data-sync-workflow"
           # Has to be a better way to do this DRY
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.ENV }}  
           filename: .env
-          working-directory: "/home/runner/work/python-pipelines/gdrive-aws-data-sync-workflow"
+          working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-data-sync-workflow"
       - run: |
          cd gdrive-aws-sync-workflow && pip install -r requirements.txt && python gdrive_sync_to_s3.py
 
