@@ -7,6 +7,8 @@ env: # Or as an environment variable
   AccessKey: ${{ secrets.ACCESSKEY }}
   Secretaccesskey: ${{ secrets.SECRETSACCESSKEY }}
   SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
+  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
   sync-to-s3:
@@ -34,5 +36,5 @@ jobs:
           filename: .env
           working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-data-sync-workflow"
       - run: |
-         cd gdrive-aws-sync-workflow && pip install -r requirements.txt && python gdrive_sync_to_s3.py
+          cd gdrive-aws-sync-workflow && source .env && pip install -r requirements.txt && python gdrive_sync_to_s3.py
 
