@@ -2,34 +2,40 @@ name: Sync Gdrive AWS S3
 
 on:
     workflow_dispatch:
+
+env: # Or as an environment variable
+  AccessKey: ${{ secrets.ACCESSKEY }}
+  Secretaccesskey: ${{ secrets.SECRETSACCESSKEY }}
+  SERVICE_ACCOUNT_FILE:  ${{ secrets.SERVICE_ACCOUNT_FILE }}
+  aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
 jobs:
-  build-and-push-image:
+  sync-to-s3:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Checkout repository
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'  
 
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.SERVICE_ACCOUNT }}  
           filename: decisive-fabric-155319-3dcd7ac1c659.json
-          working-directory: "."
+          working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-sync-workflow"
           # Has to be a better way to do this DRY
       - name: Inject Secrets to Directory
         uses: mobiledevops/secret-to-file-action@v1
         with: 
           base64-encoded-secret: ${{ secrets.ENV }}  
-          filename: decisive-fabric-155319-3dcd7ac1c659.json
-          working-directory: "."
-
-      - name: Lets run some python code
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'  
+          filename: .env
+          working-directory: "/home/runner/work/python-pipelines/python-pipelines/gdrive-aws-sync-workflow"
       - run: |
           pip install -r requirements.txt
           python gdrive_sync_to_s3.py
           ls -lah
-
-
