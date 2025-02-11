@@ -3,3 +3,5 @@ This is for a series of scripts that deal with Data processing in some way shape
 TODO:
 For Jamaican audio extraction:
 WAH GWAN ALBUM - Speak patois in 25 minutes.
+
+The Jamaican Music music artist in spotify.
