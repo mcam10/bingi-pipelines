@@ -1,5 +1,5 @@
 Python Pipelines
-A collection of robust, production-ready data processing pipelines for various data engineering tasks. This project provides a suite of Python-based solutions for data ingestion, transformation, and transfer across different platforms and storage systems.
+A collection of data processing pipelines for various data engineering tasks. This project provides a suite of Python-based solutions for data ingestion, transformation, and transfer across different platforms and storage systems. Meant to be deployed on edge, or the cloud. 
 
 🌟 Features
 
