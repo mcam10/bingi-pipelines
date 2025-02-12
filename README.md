@@ -1,4 +1,24 @@
-This is for a series of scripts that deal with Data processing in some way shape or form. This is the base repo for a lot of my projects whether its data crawling, syncing across different storage locations
+Python Pipelines
+A collection of robust, production-ready data processing pipelines for various data engineering tasks. This project provides a suite of Python-based solutions for data ingestion, transformation, and transfer across different platforms and storage systems.
+
+🌟 Features
+
+Modular Architecture: Each pipeline is a self-contained module that can be deployed independently
+Multiple Deployment Options: Support for local execution, Docker containers, and Kubernetes deployments
+API-First Design: RESTful APIs for all pipelines enabling easy integration
+
+🏗️ Architecture
+The project consists of multiple specialized pipelines:
+Data Transfer Pipelines
+
+Google Drive to S3: Transfer files from Google Drive to AWS S3
+
+
+Data Processing Pipelines
+
+Image Processing: Convert and process image files (HEIC to JPG, resize, compress)
+CSV Processing: Handle CSV transformations and validations
+PDF Processing: Extract data from PDFs and convert formats
 
 TODO:
 For Jamaican audio extraction:
