@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  heic-converter:
+    build: .
+    volumes:
+      - ${INPUT_DIR:-./data}:/app/data
+    environment:
+      - QUALITY=${QUALITY:-50}
+      - WORKERS=${WORKERS:-4}
+    command: "/app/data -q ${QUALITY:-50} -w ${WORKERS:-4}"
