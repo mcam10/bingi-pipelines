@@ -219,4 +219,4 @@ Create an issue if you:
 
 ---
 
-Made with ❤️ by [Your Name]
+Made with ❤️ by [BinGi]
