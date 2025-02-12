@@ -16,6 +16,7 @@ A Docker container that efficiently converts HEIC images to JPG format. This too
 
 - Docker
 - Docker Compose (optional, but recommended)
+- Directory(unzipped) of Images
 
 ## Quick Start
 
@@ -89,11 +90,14 @@ docker build -t heic-converter .
 Basic usage:
 ```bash
 docker run -v $(pwd)/data:/app/data heic-converter /app/data
+If Directory is not named data:
+docker run -v $(pwd)/${directory_on_local_machine}:/app/data heic-converter /app/data/ -q 90 -w 8 --remove-originals
 ```
 
 With custom settings:
 ```bash
 docker run -v $(pwd)/data:/app/data heic-converter /app/data -q 90 -w 8 --remove-originals
+
 ```
 
 ### Using Docker Compose
