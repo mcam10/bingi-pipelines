@@ -21,7 +21,7 @@ A Docker container that efficiently converts HEIC images to JPG format. This too
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/heic-converter
+git clone https://github.com/mcam10/python-pipelines.git
 cd heic-converter
 ```
 
