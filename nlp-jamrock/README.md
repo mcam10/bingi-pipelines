@@ -6,6 +6,9 @@ This project focuses on analyzing and improving semantic similarity between Jama
 
 The project processes parallel translations between Jamaican Creole and English, utilizing sentence transformers to measure and improve semantic similarity between language pairs.
 
+## Dataset Hosted:
+https://huggingface.co/datasets/gearV9/patois_proverbs
+
 ## Features
 
 - Parallel text processing for Jamaican Creole and English
