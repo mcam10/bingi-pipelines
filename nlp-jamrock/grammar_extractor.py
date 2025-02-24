@@ -11,37 +11,34 @@ config = CrawlerRunConfig(
         #    cache_mode=CacheMode.ENABLED  # Use cache if available
 )
 
+proverbs = []
+# Create lists for jamaican and english texts
+jamaican_texts = []
+english_texts = []
+
 async def main():
     async with AsyncWebCrawler() as crawler:
-        result = await crawler.arun(
-            url="https://opengrammar.github.io/jam/",
+        results = await crawler.arun_many(
+            urls=["https://opengrammar.github.io/jam/glossary/","https://opengrammar.github.io/jam/" , "https://opengrammar.github.io/jam/gazetteer/"],
             config=config
         )
-
-    soup = BeautifulSoup(result.cleaned_html, 'html.parser')
-
-    # Find all paragraphs that contain both strong and em tags
-    proverbs = []
-    # Create lists for jamaican and english texts
-    jamaican_texts = []
-    english_texts = []
-
-    for p in soup.find_all('p'):
-        strong = p.find('strong')
-        em = p.find('em')
-        if strong and em:  # Only process paragraphs that have both tags
-            jamaican = strong.text.strip()
-            english = em.text.strip()
-            proverbs.append((jamaican, english))
-
-            ## Building for lata DF pandas or HG
-            jamaican_texts.append(jamaican)
-            english_texts.append(english_texts)
-
     
+    for url in results:
+        soup = BeautifulSoup(url.cleaned_html, 'html.parser')
+        for p in soup.find_all('p'):
+            strong = p.find('strong')
+            em = p.find('em')
+            if strong and em:
+                jamaican = strong.text.strip()
+                english = em.text.strip()
+                proverbs.append((jamaican, english))
+                jamaican_texts.append(jamaican)
+                english_texts.append(english_texts)
+
+
     # Create DataFrame
     df = pd.DataFrame(proverbs, columns=['Jamaican', 'English'])
-    
+
     # Create and print table
     headers = ["Jamaican", "English"]
 
@@ -50,8 +47,7 @@ async def main():
     # load Dataset from Pandas Dataframe
     dataset = Dataset.from_pandas(df)
 
-    print(dataset)
-
+    dataset.push_to_hub("gearV9/patois_proverbs")
 
 if __name__ == "__main__":
     asyncio.run(main())
