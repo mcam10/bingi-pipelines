@@ -151,9 +151,9 @@ def process_video(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Process a video file with NanoOWL")
-    parser.add_argument("image_encode_engine", type=str, help="Path to the image encoder engine")
-    parser.add_argument("video_path", type=str, help="Path to the input video file")
-    parser.add_argument("output_path", type=str, help="Path to save the output video")
+    parser.add_argument("--image_encode_engine", type=str, required=True, help="Path to the image encoder engine")
+    parser.add_argument("--video_path", type=str, required=True, help="Path to the input video file")
+    parser.add_argument("--output_path", type=str, required=True, help="Path to save the output video")
     parser.add_argument("--prompt", type=str, required=True, help="Detection prompt")
     parser.add_argument("--output_fps", type=float, help="Output video FPS (default: same as input)")
     parser.add_argument("--resize", type=str, help="Resize resolution as WIDTHxHEIGHT")
